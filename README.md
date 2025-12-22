@@ -1,150 +1,80 @@
 # 🔍 Agentic Deep Researcher
 
-An MCP-powered multi-agent deep researcher that performs comprehensive web searches using LinkUp and orchestrates intelligent agents using CrewAI.
+An enterprise-grade, multi-agent deep research platform. It leverages **CrewAI** for agent orchestration, **LinkUp** for deep web search, and a modern **Next.js** frontend for a seamless user experience.
 
-![System Architecture](multiagent_deep_researcher/system%20architecture.png)
+![System Architecture](backend/system%20architecture.png)
 
-## Overview
+## 🚀 Overview
 
-This project implements a sophisticated multi-agent research system that:
-- Performs deep web searches using the LinkUp API
-- Orchestrates specialized AI agents with CrewAI
-- Provides an interactive Streamlit web interface
-- Can be used as an MCP (Model Context Protocol) server for tool extensibility
+This system autonomously performs deep research on any topic:
+1.  **Web Searcher Agent**: Scours the web using LinkUp API.
+2.  **Research Analyst Agent**: Reads, verifies, and synthesizes facts.
+3.  **Technical Writer Agent**: Compiles a professional markdown report with citations.
 
-## Tech Stack
+The result is a comprehensive research report generated in minutes.
 
-- **[LinkUp](https://linkup.so/)** - Deep web search API
-- **[CrewAI](https://www.crewai.com/)** - Multi-agent orchestration framework
-- **[OpenRouter](https://openrouter.ai/)** - LLM API gateway (GPT-4o-mini, Deepseek, and more)
-- **[Streamlit](https://streamlit.io/)** - Interactive web UI
-- **[MCP (Model Context Protocol)](https://modelcontextprotocol.io/)** - Tool extensibility
+## 🛠️ Tech Stack
 
-## Quick Start
+*   **Frontend**: [Next.js 15](https://nextjs.org/) (React, Tailwind CSS, Lucide Icons)
+*   **Backend**: [FastAPI](https://fastapi.tiangolo.com/) (Python, Uvicorn)
+*   **Agents**: [CrewAI](https://www.crewai.com/)
+*   **Search**: [LinkUp API](https://linkup.so/)
+*   **LLM**: [OpenRouter](https://openrouter.ai/) (GPT-4o, DeepSeek, etc.)
 
-### Prerequisites
-
-- Python 3.11 or higher
-- [uv](https://docs.astral.sh/uv/) package manager
-
-### Installation
-
-1. Clone the repository:
+## 📦 Project Structure
 
 ```bash
-git clone https://github.com/apexneural-hansika/multi-agent_deep-researcher.git
-cd multi-agent_deep-researcher
+agentic-deep-researcher/
+├── frontend/         # Next.js Web Application
+│   ├── app/          # App Router & Pages
+│   └── components/   # UI Components
+├── backend/          # FastAPI Server
+│   ├── app/          # API Routes & Agent Logic
+│   └── agents.py     # Agent Definitions
+└── README.md         # Documentation
 ```
 
-2. Install dependencies:
+## 🏁 Quick Start
 
+### 1. Prerequisites
+*   Python 3.10+
+*   Node.js 18+
+*   `uv` (Python package manager)
+
+### 2. Backend Setup
 ```bash
 cd backend
 uv sync
-```
-
-3. Configure API keys:
-
-```bash
 cp .env.example .env
+# Edit .env with your LINKUP_API_KEY and OPENROUTER_API_KEY
+
+# Run the API Server
+uv run uvicorn app.main:app --port 8501 --reload
 ```
+*Backend runs at `http://localhost:8501`*
 
-Edit `.env` and add your API keys:
-- Get OpenRouter API key: https://openrouter.ai/keys
-- Get LinkUp API key: https://app.linkup.so/sign-up
-
-4. Run the application:
-
-```bash
-uv run streamlit run app.py
-```
-
-The app will be available at `http://localhost:8501`
-
-## Frontend Setup
-
-To run the Next.js frontend:
-
+### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
+
+# Run the Web App
 npm run dev
 ```
+*App runs at `http://localhost:3000`*
 
-The frontend will be available at [http://localhost:3000](http://localhost:3000).
+## ✨ Features
 
-## Features
+*   **Real-time Progress**: Watch agents as they think and browse.
+*   **Deep Research**: Multi-step reasoning and fact verification.
+*   **Citations**: Every claim is backed by a source URL.
+*   **Export Ready**: Print or Copy reports directly.
+*   **Polished UI**: Enterprise-class design with "Glassmorphism" aesthetics.
 
-- ✅ **Multi-Agent Research** - Three specialized agents working together:
-  - **Web Searcher** - Finds relevant information using LinkUp
-  - **Research Analyst** - Analyzes and synthesizes findings
-  - **Technical Writer** - Creates comprehensive reports
-- ✅ **Deep Web Search** - Powered by LinkUp's comprehensive search API
-- ✅ **Interactive UI** - User-friendly Streamlit interface
-- ✅ **MCP Integration** - Use as a tool in Cursor and other MCP clients
-- ✅ **Flexible LLM Support** - Works with multiple models via OpenRouter
-- ✅ **Source Citations** - All responses include source links
+## 🤝 Contributing
 
-## How It Works
+Contributions are welcome! Please fork the repository and submit a Pull Request.
 
-1. **User Query** - Submit a research question through the Streamlit UI
-2. **Web Searcher Agent** - Formulates optimal search queries and retrieves relevant information
-3. **Research Analyst Agent** - Analyzes raw search results and extracts key insights
-4. **Technical Writer Agent** - Creates a well-structured report with citations
-5. **Final Report** - Displayed with source links and formatted content
+## 📄 License
 
-## Use as MCP Server
-
-To use this as an MCP tool in Cursor or other MCP-compatible applications, add this configuration to your `.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "crew_research": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "path/to/backend",
-        "run",
-        "server.py"
-      ],
-      "env": {
-        "OPENROUTER_API_KEY": "your_openrouter_api_key_here",
-        "LINKUP_API_KEY": "your_linkup_api_key_here"
-      }
-    }
-  }
-}
-```
-
-## Documentation
-
-For detailed documentation, see the [backend README](backend/README.md).
-
-## Project Structure
-
-```
-multi-agent_deep-researcher/
-├── backend/
-│   ├── app.py                    # Streamlit web interface
-│   ├── agents.py                 # CrewAI agent definitions and logic
-│   ├── server.py                 # MCP server implementation
-│   ├── pyproject.toml            # Project dependencies
-│   ├── .env.example              # Environment variables template
-│   ├── system architecture.png   # System architecture diagram
-│   └── README.md                 # Detailed documentation
-├── frontend/
-│   ├── app/                      # Next.js app router
-│   ├── components/               # UI components
-│   ├── public/                   # Static assets
-│   └── package.json              # Frontend dependencies
-```
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
+MIT License.

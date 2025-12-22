@@ -26,7 +26,7 @@ export default function Home() {
               </a>
             </Button>
             <Button className="shadow-lg shadow-salmon/20" asChild>
-              <Link href="http://localhost:8501">
+              <Link href="/research">
                 <Terminal className="w-4 h-4 mr-2" />
                 Deploy Agent
               </Link>
@@ -60,7 +60,7 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button className="h-14 px-8 text-lg shadow-xl shadow-salmon/25 rounded-full w-full sm:w-auto transition-transform hover:scale-105" asChild>
-              <Link href="http://localhost:8501">
+              <Link href="/research">
                 Start Researching Now <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
