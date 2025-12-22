@@ -39,7 +39,7 @@ cd multi-agent_deep-researcher
 2. Install dependencies:
 
 ```bash
-cd multiagent_deep_researcher
+cd backend
 uv sync
 ```
 
@@ -60,6 +60,18 @@ uv run streamlit run app.py
 ```
 
 The app will be available at `http://localhost:8501`
+
+## Frontend Setup
+
+To run the Next.js frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will be available at [http://localhost:3000](http://localhost:3000).
 
 ## Features
 
@@ -92,7 +104,7 @@ To use this as an MCP tool in Cursor or other MCP-compatible applications, add t
       "command": "uv",
       "args": [
         "--directory",
-        "path/to/multiagent_deep_researcher",
+        "path/to/backend",
         "run",
         "server.py"
       ],
@@ -107,20 +119,25 @@ To use this as an MCP tool in Cursor or other MCP-compatible applications, add t
 
 ## Documentation
 
-For detailed documentation, see the [multiagent_deep_researcher README](multiagent_deep_researcher/README.md).
+For detailed documentation, see the [backend README](backend/README.md).
 
 ## Project Structure
 
 ```
 multi-agent_deep-researcher/
-└── multiagent_deep_researcher/
-    ├── app.py                    # Streamlit web interface
-    ├── agents.py                 # CrewAI agent definitions and logic
-    ├── server.py                 # MCP server implementation
-    ├── pyproject.toml            # Project dependencies
-    ├── .env.example              # Environment variables template
-    ├── system architecture.png   # System architecture diagram
-    └── README.md                 # Detailed documentation
+├── backend/
+│   ├── app.py                    # Streamlit web interface
+│   ├── agents.py                 # CrewAI agent definitions and logic
+│   ├── server.py                 # MCP server implementation
+│   ├── pyproject.toml            # Project dependencies
+│   ├── .env.example              # Environment variables template
+│   ├── system architecture.png   # System architecture diagram
+│   └── README.md                 # Detailed documentation
+├── frontend/
+│   ├── app/                      # Next.js app router
+│   ├── components/               # UI components
+│   ├── public/                   # Static assets
+│   └── package.json              # Frontend dependencies
 ```
 
 ## License

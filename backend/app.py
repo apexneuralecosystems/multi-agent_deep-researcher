@@ -1,4 +1,10 @@
+import os
+os.environ["CREWAI_TELEMETRY_OPT_OUT"] = "true"
+
 import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from agents import run_research
 
@@ -15,12 +21,10 @@ st.set_page_config(page_title="🔍 Agentic Deep Researcher", layout="wide")
 # Initialize session state variables
 
 if "linkup_api_key" not in st.session_state:
-
-    st.session_state.linkup_api_key = ""
+    st.session_state.linkup_api_key = os.getenv("LINKUP_API_KEY", "")
 
 if "openrouter_api_key" not in st.session_state:
-
-    st.session_state.openrouter_api_key = ""
+    st.session_state.openrouter_api_key = os.getenv("OPENROUTER_API_KEY", "")
 
 if "messages" not in st.session_state:
 
@@ -66,7 +70,11 @@ with st.sidebar:
 
     linkup_api_key = st.text_input(
 
-        "Enter your Linkup API Key", type="password", key="linkup_key")
+        "Enter your Linkup API Key",
+        type="password",
+        key="linkup_key",
+        value=st.session_state.linkup_api_key
+    )
 
     if linkup_api_key:
 
@@ -92,7 +100,11 @@ with st.sidebar:
 
     openrouter_api_key = st.text_input(
 
-        "Enter your OpenRouter API Key", type="password", key="openrouter_key")
+        "Enter your OpenRouter API Key",
+        type="password",
+        key="openrouter_key",
+        value=st.session_state.openrouter_api_key
+    )
 
     if openrouter_api_key:
 
