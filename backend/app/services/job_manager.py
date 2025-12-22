@@ -14,6 +14,15 @@ class JobManager:
 
     @staticmethod
     def create_job(query: str, depth: str = "standard") -> str:
+        # 1. Prompt Injection Guardrail (Synchronous)
+        forbidden_phrases = ["ignore previous instructions", "system prompt", "print your instructions"]
+        if any(phrase in query.lower() for phrase in forbidden_phrases):
+             # This will bubble up as a 500 or 400 depending on exception handler.
+             # We should probably raise HTTPException but we are in a service layer.
+             # Letting it bubble as ValueError is fine, Routes usually handle it or return 500.
+             # Ideally we want 400.
+             raise ValueError("Query contains forbidden content (Prompt Injection Detected).")
+
         job_id = str(uuid.uuid4())
         
         with JobManager._lock:

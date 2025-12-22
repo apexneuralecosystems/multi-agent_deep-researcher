@@ -53,6 +53,11 @@ class LinkUpSearchTool(BaseTool):
 def create_research_crew(query: str):
     """Create and configure the research crew with all agents and tasks"""
     
+    # Simple Guardrail
+    forbidden_phrases = ["ignore previous instructions", "system prompt", "print your instructions"]
+    if any(phrase in query.lower() for phrase in forbidden_phrases):
+        raise ValueError("Query contains forbidden content.")
+
     linkup_search_tool = LinkUpSearchTool()
     client = get_llm_client()
 

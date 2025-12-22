@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Literal
 
 class ResearchRequest(BaseModel):
-    query: str = Field(..., description="The research topic or question")
-    depth: str = Field("standard", description="standard or deep")
+    query: str = Field(..., description="The research topic or question", min_length=5, max_length=500)
+    depth: Literal["standard", "deep"] = Field("standard", description="standard or deep")
 
 class ResearchResponse(BaseModel):
     task_id: str

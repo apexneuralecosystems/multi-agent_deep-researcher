@@ -3,13 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Search, Loader2, FileText, ArrowLeft, Brain, Sparkles, Printer, Copy, RefreshCw, X } from "lucide-react";
+import { Search, Loader2, FileText, ArrowLeft, Brain, Sparkles, Printer, Copy, RefreshCw, X, Github, Check } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeSanitize from "rehype-sanitize";
 
 // API Configuration
-const API_BASE_URL = "http://localhost:8501/api/v1";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 const LOADING_MESSAGES = [
   "🔍 Searching the knowledge base...",
@@ -27,6 +28,7 @@ export default function ResearchPage() {
   const [result, setResult] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
+  const [isCopied, setIsCopied] = useState(false);
 
   // Refs
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
@@ -115,7 +117,8 @@ export default function ResearchPage() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(result);
-    // Could add toast here
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   const handeReset = () => {
@@ -223,8 +226,12 @@ export default function ResearchPage() {
                 <FileText className="w-6 h-6 text-salmon" /> Research Report
               </h2>
               <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => window.open("https://github.com/apexneural-likhithmasura/multi-agent_deep-researcher", "_blank")} className="text-burgundy border-burgundy/20 hover:bg-salmon/5 hidden md:flex">
+                  <Github className="w-4 h-4 mr-2" /> View Source
+                </Button>
                 <Button variant="outline" size="sm" onClick={handleCopy} className="text-burgundy border-burgundy/20 hover:bg-salmon/5">
-                  <Copy className="w-4 h-4 mr-2" /> Copy
+                  {isCopied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+                  {isCopied ? "Copied!" : "Copy"}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => window.print()} className="text-burgundy border-burgundy/20 hover:bg-salmon/5">
                   <Printer className="w-4 h-4 mr-2" /> Print / PDF
@@ -238,6 +245,7 @@ export default function ResearchPage() {
             <article className="prose prose-burgundy prose-lg max-w-none bg-white p-8 md:p-16 rounded-2xl shadow-xl shadow-burgundy/5 border border-burgundy/5 print:shadow-none print:border-none print:p-0">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeSanitize]}
                 components={{
                   h1: ({ node, ...props }) => <h1 className="text-3xl font-bold text-burgundy mb-6 pb-2 border-b border-burgundy/10" {...props} />,
                   h2: ({ node, ...props }) => <h2 className="text-2xl font-bold text-burgundy mt-8 mb-4" {...props} />,

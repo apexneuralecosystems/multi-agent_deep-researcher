@@ -64,9 +64,11 @@ export default function Home() {
                 Start Researching Now <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
-            <Button variant="outline" className="h-14 px-8 text-lg rounded-full w-full sm:w-auto bg-white/50 backdrop-blur-sm hover:bg-white/80">
-              <Github className="mr-2 w-5 h-5" />
-              View Source Code
+            <Button variant="outline" className="h-14 px-8 text-lg rounded-full w-full sm:w-auto bg-white/50 backdrop-blur-sm hover:bg-white/80" asChild>
+              <Link href="https://github.com/apexneural-likhithmasura/multi-agent_deep-researcher" target="_blank" rel="noopener noreferrer">
+                <Github className="mr-2 w-5 h-5" />
+                View Source Code
+              </Link>
             </Button>
           </div>
 

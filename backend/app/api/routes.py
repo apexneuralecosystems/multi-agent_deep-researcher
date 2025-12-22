@@ -1,14 +1,19 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from app.api.models import ResearchRequest, ResearchResponse, JobStatusResponse
 from app.services.job_manager import JobManager
+from app.core.limiter import limiter
 
 router = APIRouter()
 
 @router.post("/research", response_model=ResearchResponse)
-async def start_research(request: ResearchRequest):
+@limiter.limit("5/minute")
+async def start_research(request: Request, body: ResearchRequest):
     """Start a new research task"""
-    job_id = JobManager.create_job(request.query, request.depth)
-    return ResearchResponse(task_id=job_id, status="pending")
+    try:
+        job_id = JobManager.create_job(body.query, body.depth)
+        return ResearchResponse(task_id=job_id, status="pending")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/research/{task_id}", response_model=JobStatusResponse)
 async def get_research_status(task_id: str):
