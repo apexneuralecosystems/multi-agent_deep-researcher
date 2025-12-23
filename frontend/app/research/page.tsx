@@ -65,7 +65,14 @@ export default function ResearchPage() {
         body: JSON.stringify({ query: query.trim(), depth: "standard" }),
       });
 
-      if (!res.ok) throw new Error("Failed to start research");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        // Handle Pydantic validation errors (array of errors) or simple detail string
+        const errorMessage = errorData.detail
+          ? (Array.isArray(errorData.detail) ? errorData.detail[0].msg : errorData.detail)
+          : "Failed to start research";
+        throw new Error(errorMessage);
+      }
 
       const data = await res.json();
       setTaskId(data.task_id);
@@ -73,8 +80,8 @@ export default function ResearchPage() {
 
       // Start polling
       startPolling(data.task_id);
-    } catch (err) {
-      setError("Unable to connect to the agent crew. Is the backend running?");
+    } catch (err: any) {
+      setError(err.message || "Unable to connect to the agent crew. Is the backend running?");
       setIsLoading(false);
     }
   };

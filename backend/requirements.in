@@ -1,0 +1,24 @@
+# --- Core Framework ---
+# High-performance ASGI framework + server
+fastapi
+uvicorn
+
+# --- Agents & AI ---
+# Agent orchestration and direct LLM capability
+crewai
+openai
+
+# --- Tools & Integrations ---
+# Search tool for agents
+linkup-sdk
+
+# --- Security & Reliability ---
+# Rate limiting for API protection
+slowapi
+# Environment variable management
+python-dotenv
+pydantic-settings
+
+# --- Data Validation ---
+# Strict typing for API requests/responses (usually pulled by fastapi, but good to be explicit)
+pydantic

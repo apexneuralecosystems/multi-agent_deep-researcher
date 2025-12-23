@@ -27,10 +27,12 @@ The result is a comprehensive research report generated in minutes.
 agentic-deep-researcher/
 ├── frontend/         # Next.js Web Application
 │   ├── app/          # App Router & Pages
-│   └── components/   # UI Components
+│   └── .env.local    # Frontend Config (API URL)
 ├── backend/          # FastAPI Server
 │   ├── app/          # API Routes & Agent Logic
-│   └── agents.py     # Agent Definitions
+│   ├── requirements.in  # Dependency Definition
+│   ├── requirements.txt # Locked Production Dependencies
+│   └── .env          # Secrets (API Keys)
 └── README.md         # Documentation
 ```
 
@@ -39,29 +41,124 @@ agentic-deep-researcher/
 ### 1. Prerequisites
 *   Python 3.10+
 *   Node.js 18+
-*   `uv` (Python package manager)
+*   `uv` (fast Python package manager) **OR** `pip`
 
-### 2. Backend Setup
+### 2. Backend Setup (FastAPI)
+
+You can run the backend using either `uv` (recommended) or standard `pip`.
+
+#### Option A: Using `uv` (Fastest)
 ```bash
 cd backend
-uv sync
+
+# 1. Create .env file
 cp .env.example .env
-# Edit .env with your LINKUP_API_KEY and OPENROUTER_API_KEY
+# -> Edit .env with your LINKUP_API_KEY and OPENROUTER_API_KEY
 
-# Run the API Server
-uv run uvicorn app.main:app --port 8501 --reload
+# 2. Run the Server
+uv run uvicorn app.main:app --reload
 ```
-*Backend runs at `http://localhost:8501`*
 
-### 3. Frontend Setup
+#### Option B: Using standard `pip`
+```bash
+cd backend
+
+# 1. Create .env file
+cp .env.example .env
+# -> Edit .env with your LINKUP_API_KEY and OPENROUTER_API_KEY
+
+# 2. Install Dependencies
+pip install -r requirements.txt
+
+# 3. Run the Server
+python -m uvicorn app.main:app --reload
+```
+*Backend runs at `http://localhost:8000`*
+
+### 3. Frontend Setup (Next.js)
+
 ```bash
 cd frontend
+
+# 1. Install Dependencies
 npm install
 
-# Run the Web App
+# 2. Configure Environment
+# Ensure .env.local exists with: NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+
+# 3. Run the Web App
 npm run dev
 ```
 *App runs at `http://localhost:3000`*
+
+## ⚙️ Configuration Reference
+
+Use `.env` files to configure the application.
+
+### Backend (`backend/.env`)
+
+| Variable | Description | Required | Example |
+| :--- | :--- | :--- | :--- |
+| `LINKUP_API_KEY` | API key for LinkUp search. | Yes | `lk_...` |
+| `OPENROUTER_API_KEY` | API key for OpenRouter LLMs. | Yes | `sk-or-...` |
+| `ALLOWED_ORIGINS` | Comma-separated CORS origins. | Yes | `http://localhost:3000,https://my-app.com` |
+
+### Frontend (`frontend/.env.local`)
+
+| Variable | Description | Required | Example |
+| :--- | :--- | :--- | :--- |
+| `NEXT_PUBLIC_API_URL` | Full URL to the backend API. | Yes | `http://localhost:8000/api/v1` |
+
+## 🛡️ Dependency Management
+
+We use a modern `requirements.in` workflow to keep dependencies clean.
+
+*   **`backend/requirements.in`**: Human-readable list of top-level libraries (edit this to add packages).
+*   **`backend/requirements.txt`**: Machine-generated lock file with strict versions and hashes.
+
+To update dependencies (requires `uv`):
+```bash
+cd backend
+uv pip compile requirements.in -o requirements.txt
+```
+
+## 🚀 Production Deployment
+
+Deploy the frontend and backend as separate services.
+
+### Backend (VPS / CloudPanel)
+1.  **Install**: `pip install -r requirements.txt`
+2.  **Run**: Use Gunicorn with Uvicorn workers for production performance.
+    ```bash
+    gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
+    ```
+
+### Frontend (Vercel / Netlify / VPS)
+1.  **Build**: `npm run build`
+2.  **Start**: `npm start`
+    *   Ensure `NEXT_PUBLIC_API_URL` is set in your build environment.
+
+## 🔌 API Overview
+
+Full OpenAPI documentation is available at `/docs` when the server is running.
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/research` | triggers a new research job. |
+| `GET` | `/health` | Health check probe. |
+
+## 🔒 Security Notes
+
+*   **Sanitization**: All markdown output is sanitized on the frontend (using `rehype-sanitize`) to prevent XSS.
+*   **Headers**: The backend enforces strict security headers (`X-Frame-Options`, `HSTS`, etc.).
+*   **CORS**: Configurable via `ALLOWED_ORIGINS` to prevent unauthorized cross-origin requests.
+*   **Rate Limiting**: API endpoints are rate-limited to prevent abuse.
+
+## ⚠️ Known Limitations
+
+*   **No Authentication**: The system currently does not have user accounts.
+*   **Volatile Storage**: Research jobs are held in memory; restarting the server clears history.
+*   **Prompt Injection**: While guardrails exist, LLMs can still be tricked. Use with caution in public-facing deployments.
 
 ## ✨ Features
 
