@@ -119,7 +119,7 @@ We use a modern `requirements.in` workflow to keep dependencies clean.
 To update dependencies (requires `uv`):
 ```bash
 cd backend
-uv pip compile requirements.in -o requirements.txt
+uv pip compile requirements.in --universal -o requirements.txt
 ```
 
 ## 🚀 Production Deployment
