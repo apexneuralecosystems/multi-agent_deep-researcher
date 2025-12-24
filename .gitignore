@@ -36,6 +36,10 @@ env/
 # Environment variables
 .env
 
+# Log files
+*.log
+app.log
+
 # Streamlit
 .streamlit/
 

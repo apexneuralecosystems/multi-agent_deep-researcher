@@ -93,7 +93,7 @@ npm run dev
 
 ## ⚙️ Configuration Reference
 
-Use `.env` files to configure the application.
+Use `.env` files to configure the application. Copy `.env.example` files to create your configuration.
 
 ### Backend (`backend/.env`)
 
@@ -101,13 +101,20 @@ Use `.env` files to configure the application.
 | :--- | :--- | :--- | :--- |
 | `LINKUP_API_KEY` | API key for LinkUp search. | Yes | `lk_...` |
 | `OPENROUTER_API_KEY` | API key for OpenRouter LLMs. | Yes | `sk-or-...` |
-| `ALLOWED_ORIGINS` | Comma-separated CORS origins. | Yes | `http://localhost:3000,https://my-app.com` |
+| `ALLOWED_ORIGINS` | Comma-separated CORS origins (frontend URLs). | Yes | `http://localhost:3000,https://researcherai.apexneural.cloud` |
+| `ALLOWED_HOSTS` | Comma-separated trusted hostnames (backend domain). | No | `localhost,127.0.0.1,researcherai-api.apexneural.cloud` |
+
+**Important CORS Notes:**
+- Origins must include the exact frontend URL (protocol, domain, port)
+- No trailing slashes in origins
+- Wildcard `*` is not allowed for security
+- For production, include both development and production frontend URLs
 
 ### Frontend (`frontend/.env.local`)
 
 | Variable | Description | Required | Example |
 | :--- | :--- | :--- | :--- |
-| `NEXT_PUBLIC_API_URL` | Full URL to the backend API. | Yes | `http://localhost:8000/api/v1` |
+| `NEXT_PUBLIC_API_URL` | Full URL to the backend API (must match backend's allowed origins). | Yes | `http://localhost:8000/api/v1` (dev) or `https://researcherai-api.apexneural.cloud/api/v1` (prod) |
 
 ## 🛡️ Dependency Management
 
@@ -128,15 +135,35 @@ Deploy the frontend and backend as separate services.
 
 ### Backend (VPS / CloudPanel)
 1.  **Install**: `pip install -r requirements.txt`
-2.  **Run**: Use Gunicorn with Uvicorn workers for production performance.
+2.  **Configure**: Create `.env` file with production values:
+    ```bash
+    ALLOWED_ORIGINS=https://researcherai.apexneural.cloud
+    ALLOWED_HOSTS=researcherai-api.apexneural.cloud
+    LINKUP_API_KEY=your_production_key
+    OPENROUTER_API_KEY=your_production_key
+    ```
+3.  **Run**: Use Gunicorn with Uvicorn workers for production performance.
     ```bash
     gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
     ```
+4.  **Verify CORS**: Test the CORS endpoint: `https://your-backend-url/api/v1/cors-test`
 
 ### Frontend (Vercel / Netlify / VPS)
-1.  **Build**: `npm run build`
-2.  **Start**: `npm start`
-    *   Ensure `NEXT_PUBLIC_API_URL` is set in your build environment.
+1.  **Configure Environment Variables** in your deployment platform:
+    ```bash
+    NEXT_PUBLIC_API_URL=https://researcherai-api.apexneural.cloud/api/v1
+    ```
+2.  **Build**: `npm run build`
+3.  **Start**: `npm start` (or let platform handle it)
+4.  **Verify**: Test from production frontend - check browser console for CORS errors
+
+### Production CORS Checklist
+- ✅ Backend `ALLOWED_ORIGINS` includes exact production frontend URL
+- ✅ Backend `ALLOWED_HOSTS` includes backend domain
+- ✅ Frontend `NEXT_PUBLIC_API_URL` points to production backend
+- ✅ Both frontend and backend use HTTPS in production
+- ✅ No trailing slashes in URLs
+- ✅ Test CORS from production frontend (not just localhost)
 
 ## 🔌 API Overview
 
