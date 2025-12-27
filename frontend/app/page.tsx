@@ -258,11 +258,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-burgundy/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-burgundy/40">
-            <p>© 2024 Multi-Agent Deep Researcher. MIT License.</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-salmon transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-salmon transition-colors">Terms of Service</a>
+          <div className="pt-8 border-t border-burgundy/5 text-center text-sm text-burgundy/60">
+            <p className="mb-2">© 2025 ApexNeural. All rights reserved.</p>
+            <div className="flex justify-center gap-6">
+              <Link href="/privacy" className="hover:text-salmon transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-salmon transition-colors">Terms of Service</Link>
             </div>
           </div>
         </div>
